@@ -3,7 +3,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.tsx';
-import { Home, Contact } from './pages';
+import { Home, ToolStorePage } from './pages';
 
 const router = createBrowserRouter([
   {
@@ -15,8 +15,8 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: '/tools/contact',
-        element: <Contact />,
+        path: '/tools/store/',
+        element: <ToolStorePage />,
       },
     ],
   },

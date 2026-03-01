@@ -12,9 +12,9 @@ function App() {
           </Button>
         </Link>
         {' | '}
-        <Link to="/tools/contact">
+        <Link to="/tools/store">
           <Button variant="link" size="xs">
-            Contact
+            Store
           </Button>
         </Link>
       </nav>
