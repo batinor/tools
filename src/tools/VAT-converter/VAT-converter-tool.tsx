@@ -12,44 +12,63 @@ import {
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
   FieldSet,
 } from '@/components/ui/field';
 
+import { Card, CardContent } from '@/components/ui/card';
+
+import { isValidNumber, normalizeNumber } from '@/lib/utils';
+
 export function VATConverterTool() {
   const [excVAT, setExcVAT] = useState('');
   const [incVAT, setIncVAT] = useState('');
+  const [excVATError, setExcVATError] = useState<string | null>(null);
+  const [incVATError, setIncVATError] = useState<string | null>(null);
   const [VAT, setVAT] = useState(0.2);
+  const invalidNumberError = 'Le montant saisie doit être un nombre valide.';
 
   const handleExcVATChange = (value: string) => {
-    setExcVAT(value);
+    const normalized = normalizeNumber(value);
+    setExcVAT(normalized);
 
-    if (!value) {
+    if (!normalized) {
+      setExcVATError(null);
       setIncVAT('');
       return;
     }
 
-    const ht = parseFloat(value);
-    if (!isNaN(ht)) {
-      const ttc = (ht * (1 + VAT)).toFixed(2);
-      setIncVAT(ttc);
+    if (!isValidNumber(normalized)) {
+      setExcVATError(invalidNumberError);
+      return;
     }
+
+    setExcVATError(null);
+
+    const ht = parseFloat(normalized);
+    setIncVAT((ht * (1 + VAT)).toFixed(2));
   };
-
   const handleIncVATChange = (value: string) => {
-    setIncVAT(value);
+    const normalized = normalizeNumber(value);
+    setIncVAT(normalized);
 
-    if (!value) {
+    if (!normalized) {
+      setIncVATError(null);
       setExcVAT('');
       return;
     }
 
-    const ttc = parseFloat(value);
-    if (!isNaN(ttc)) {
-      const ht = (ttc / (1 + VAT)).toFixed(2);
-      setExcVAT(ht);
+    if (!isValidNumber(normalized)) {
+      setIncVATError(invalidNumberError);
+      return;
     }
+
+    setIncVATError(null);
+
+    const ttc = parseFloat(normalized);
+    setExcVAT((ttc / (1 + VAT)).toFixed(2));
   };
 
   const handleVATChange = (value: string) => {
@@ -72,6 +91,11 @@ export function VATConverterTool() {
       }
     }
   };
+
+  const vatAmount =
+    excVAT && incVAT
+      ? (parseFloat(incVAT) - parseFloat(excVAT)).toFixed(2)
+      : '';
 
   return (
     <FieldGroup>
@@ -99,10 +123,12 @@ export function VATConverterTool() {
             <FieldDescription>Indiquer le montant HT en euros</FieldDescription>
             <Input
               id="excluding-vat"
-              type="number"
+              type="text"
+              inputMode="decimal"
               value={excVAT}
               onChange={(e) => handleExcVATChange(e.target.value)}
             />
+            {excVATError && <FieldError>{excVATError}</FieldError>}
           </Field>
 
           <Field>
@@ -112,13 +138,22 @@ export function VATConverterTool() {
             </FieldDescription>
             <Input
               id="including-vat"
-              type="number"
+              type="text"
+              inputMode="decimal"
               value={incVAT}
               onChange={(e) => handleIncVATChange(e.target.value)}
             />
+            {incVATError && <FieldError>{incVATError}</FieldError>}
           </Field>
         </FieldGroup>
       </FieldSet>
+      {vatAmount && (
+        <Card>
+          <CardContent className="">
+            Le montant de la TVA est de : {vatAmount} €
+          </CardContent>
+        </Card>
+      )}
     </FieldGroup>
   );
 }
