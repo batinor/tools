@@ -12,3 +12,7 @@ export function normalizeNumber(value: string) {
 export function isValidNumber(value: string) {
   return /^(\d+(\.\d*)?|\.\d+)$/.test(value);
 }
+
+export function isStrictDecimal(value: string) {
+  return /^(\d+(\.\d+)?|\.\d+)$/.test(value);
+}

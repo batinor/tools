@@ -149,9 +149,7 @@ export function VATConverterTool() {
       </FieldSet>
       {vatAmount && (
         <Card>
-          <CardContent className="">
-            Le montant de la TVA est de : {vatAmount} €
-          </CardContent>
+          <CardContent>Le montant de la TVA est de : {vatAmount} €</CardContent>
         </Card>
       )}
     </FieldGroup>

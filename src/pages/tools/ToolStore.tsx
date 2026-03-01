@@ -25,6 +25,7 @@ export default function ToolStorePage() {
             key={tool.id}
             name={tool.name}
             description={tool.description}
+            icon={tool.icon}
             onClick={() => setSelectedTool(tool)}
           />
         ))}
